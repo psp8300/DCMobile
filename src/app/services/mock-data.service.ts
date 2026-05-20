@@ -103,12 +103,44 @@ const MOCK_SCHEDULE: ScheduleEvent[] = [
 @Injectable({ providedIn: 'root' })
 export class MockDataService {
 
+  // Mutable copy so create/rename/delete survive for the session
+  private lists: ListItem[] = MOCK_LISTS.map(l => ({ ...l }));
+
   getStats(): Observable<DashboardStats> {
     return of(MOCK_STATS);
   }
 
   getLists(): Observable<ListItem[]> {
-    return of(MOCK_LISTS);
+    return of([...this.lists]);
+  }
+
+  addList(name: string): ListItem {
+    const palette = ['#3f51b5','#e91e63','#009688','#ff9800','#9c27b0','#4caf50','#f44336','#2196f3'];
+    const list: ListItem = {
+      listId:      Date.now(),
+      listName:    name.trim(),
+      description: '',
+      itemCount:   0,
+      createdAt:   new Date().toISOString().split('T')[0],
+      color:       palette[Math.floor(Math.random() * palette.length)],
+    };
+    this.lists.push(list);
+    return list;
+  }
+
+  deleteList(listId: number): void {
+    this.lists = this.lists.filter(l => l.listId !== listId);
+  }
+
+  renameList(listId: number, name: string): void {
+    const l = this.lists.find(l => l.listId === listId);
+    if (l) l.listName = name.trim();
+  }
+
+  getListItems(listId: number): Item[] {
+    const list = this.lists.find(l => l.listId === listId);
+    if (!list) return [];
+    return MOCK_ITEMS.filter(i => i.listName === list.listName);
   }
 
   getItems(): Observable<Item[]> {
