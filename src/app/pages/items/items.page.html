@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Items</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onAdd()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-searchbar
+      placeholder="Search items..."
+      [(ngModel)]="searchText"
+      (ionInput)="onSearch($event)"
+      debounce="200">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-item *ngFor="let item of filteredItems" detail="false" class="item-row">
+      <div class="item-avatar" slot="start">
+        <ion-icon name="cube-outline"></ion-icon>
+      </div>
+      <ion-label>
+        <h3>{{ item.itemName }}</h3>
+        <p>{{ item.listName }}</p>
+        <p *ngIf="item.value1" class="value">{{ item.value1 }}</p>
+      </ion-label>
+      <ion-badge [color]="variantColor(item.variantName)" slot="end">
+        {{ item.variantName }}
+      </ion-badge>
+    </ion-item>
+  </ion-list>
+
+  <ion-note *ngIf="filteredItems.length === 0" class="ion-padding ion-text-center empty-note">
+    No items found
+  </ion-note>
+
+  <ion-toast
+    [isOpen]="showToast"
+    message="This is a demo — add item is not available."
+    duration="2500"
+    color="warning"
+    position="bottom">
+  </ion-toast>
+
+</ion-content>

@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Lists</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onAdd()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-card *ngFor="let list of lists" class="list-card">
+    <ion-card-content>
+      <div class="list-header">
+        <div class="list-dot" [style.background]="list.color"></div>
+        <div class="list-info">
+          <h3>{{ list.listName }}</h3>
+          <p>{{ list.description }}</p>
+        </div>
+        <ion-badge color="primary">{{ list.itemCount }}</ion-badge>
+      </div>
+      <div class="list-meta">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <span>Created {{ list.createdAt }}</span>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-toast
+    [isOpen]="showToast"
+    message="This is a demo — add list is not available."
+    duration="2500"
+    color="warning"
+    position="bottom">
+  </ion-toast>
+
+</ion-content>

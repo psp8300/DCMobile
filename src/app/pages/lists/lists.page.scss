@@ -1,0 +1,48 @@
+.list-card {
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.list-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  .list-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .list-info {
+    flex: 1;
+
+    h3 {
+      margin: 0 0 4px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+.list-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  color: var(--ion-color-medium);
+  font-size: 12px;
+
+  ion-icon {
+    font-size: 14px;
+  }
+}

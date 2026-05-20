@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Activity Log</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-card *ngFor="let a of activities" class="activity-card">
+    <ion-card-content>
+      <div class="activity-row">
+        <div class="activity-icon">
+          <ion-icon [name]="activityIcon(a.activityName)" color="primary"></ion-icon>
+        </div>
+        <div class="activity-body">
+          <div class="activity-title">
+            <span>{{ a.activityName }}</span>
+            <ion-badge color="primary">{{ formatDuration(a.durationMinutes || 0) }}</ion-badge>
+          </div>
+          <p class="activity-notes">{{ a.notes }}</p>
+          <div class="activity-meta">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ a.date }}</span>
+          </div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

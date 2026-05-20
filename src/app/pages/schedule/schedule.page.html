@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Schedule</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onAdd()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div *ngFor="let group of groupedEvents" class="month-group">
+    <ion-list-header>
+      <ion-label>{{ group.month }}</ion-label>
+    </ion-list-header>
+
+    <ion-card *ngFor="let event of group.items" class="event-card">
+      <ion-card-content>
+        <div class="event-row">
+          <div class="event-date">
+            <span class="day">{{ dayLabel(event.date).split(' ')[1] }}</span>
+            <span class="weekday">{{ dayLabel(event.date).split(' ')[0] }}</span>
+          </div>
+          <div class="event-divider"></div>
+          <div class="event-body">
+            <div class="event-title">
+              <ion-icon [name]="typeIcon(event.type)" [color]="typeColor(event.type)"></ion-icon>
+              <span>{{ event.title }}</span>
+            </div>
+            <p *ngIf="event.time" class="event-time">
+              <ion-icon name="time-outline"></ion-icon> {{ event.time }}
+            </p>
+            <p *ngIf="event.notes" class="event-notes">{{ event.notes }}</p>
+          </div>
+          <ion-badge [color]="typeColor(event.type)">{{ event.type }}</ion-badge>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <ion-toast
+    [isOpen]="showToast"
+    message="This is a demo — add event is not available."
+    duration="2500"
+    color="warning"
+    position="bottom">
+  </ion-toast>
+
+</ion-content>

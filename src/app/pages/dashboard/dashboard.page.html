@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      <div class="title-row">
+        <span>DClutter</span>
+        <ion-badge color="light" class="beta-badge">DEMO</ion-badge>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Welcome -->
+  <div class="welcome-card">
+    <div class="welcome-icon">
+      <ion-icon name="grid" color="primary"></ion-icon>
+    </div>
+    <div>
+      <h2>Welcome back!</h2>
+      <p>{{ today | date:'EEEE, d MMMM yyyy' }}</p>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <ion-icon name="list" color="primary"></ion-icon>
+      <span class="stat-value">{{ stats.totalLists }}</span>
+      <span class="stat-label">Lists</span>
+    </div>
+    <div class="stat-card">
+      <ion-icon name="cube" color="secondary"></ion-icon>
+      <span class="stat-value">{{ stats.totalItems }}</span>
+      <span class="stat-label">Items</span>
+    </div>
+    <div class="stat-card">
+      <ion-icon name="time" color="tertiary"></ion-icon>
+      <span class="stat-value">{{ stats.recentActivities }}</span>
+      <span class="stat-label">Activities</span>
+    </div>
+    <div class="stat-card">
+      <ion-icon name="calendar" color="success"></ion-icon>
+      <span class="stat-value">{{ stats.upcomingSchedules }}</span>
+      <span class="stat-label">Upcoming</span>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <ion-list-header>
+    <ion-label>Recent Activity</ion-label>
+  </ion-list-header>
+
+  <ion-list lines="full" class="activity-list">
+    <ion-item *ngFor="let a of recentActivities">
+      <ion-icon name="time-outline" slot="start" color="medium"></ion-icon>
+      <ion-label>
+        <h3>{{ a.activityName }}</h3>
+        <p>{{ a.notes }}</p>
+        <p class="meta">{{ a.date }} &nbsp;·&nbsp; {{ formatDuration(a.durationMinutes || 0) }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
