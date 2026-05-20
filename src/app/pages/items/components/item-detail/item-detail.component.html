@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar [style.--background]="variantColor">
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()" color="light">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="light">Item Detail</ion-title>
+    <ion-buttons slot="end">
+      <ion-button *ngIf="!editing" (click)="startEdit()" color="light">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="editing" (click)="cancelEdit()" color="light">
+        <ion-icon name="close-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="detail-content">
+
+  <!-- Hero banner -->
+  <div class="hero" [style.background]="variantColor + '18'">
+    <div class="hero-icon" [style.background]="variantColor">
+      <ion-icon [name]="variantIcon"></ion-icon>
+    </div>
+    <div class="hero-info">
+      <h2 *ngIf="!editing">{{ item.itemName }}</h2>
+      <ion-input *ngIf="editing" class="edit-title" [(ngModel)]="editDesc" placeholder="Item name"></ion-input>
+      <ion-badge [style.--background]="variantColor">{{ item.variantName }}</ion-badge>
+    </div>
+  </div>
+
+  <div class="detail-body">
+
+    <!-- List / Category -->
+    <div class="detail-row" *ngIf="item.listName">
+      <div class="row-icon"><ion-icon name="folder-outline"></ion-icon></div>
+      <div class="row-content">
+        <span class="row-label">List</span>
+        <span class="row-value">{{ item.listName }}</span>
+      </div>
+    </div>
+
+    <!-- Value1 (phone, number, username etc) -->
+    <div class="detail-row" *ngIf="item.value1">
+      <div class="row-icon"><ion-icon name="information-circle-outline"></ion-icon></div>
+      <div class="row-content">
+        <span class="row-label">Value</span>
+        <span class="row-value mono">{{ item.value1 }}</span>
+      </div>
+    </div>
+
+    <!-- Value2 -->
+    <div class="detail-row" *ngIf="item.value2">
+      <div class="row-icon"><ion-icon name="key-outline"></ion-icon></div>
+      <div class="row-content">
+        <span class="row-label">Secondary</span>
+        <span class="row-value mono">{{ item.value2 }}</span>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="detail-row" *ngIf="item.notes || editing">
+      <div class="row-icon"><ion-icon name="document-text-outline"></ion-icon></div>
+      <div class="row-content">
+        <span class="row-label">Notes</span>
+        <span class="row-value" *ngIf="!editing">{{ item.notes || '—' }}</span>
+        <ion-textarea *ngIf="editing" class="edit-notes" rows="3" [(ngModel)]="editNotes" placeholder="Add notes..."></ion-textarea>
+      </div>
+    </div>
+
+    <!-- Created date -->
+    <div class="detail-row">
+      <div class="row-icon"><ion-icon name="calendar-outline"></ion-icon></div>
+      <div class="row-content">
+        <span class="row-label">Added</span>
+        <span class="row-value">{{ item.createdAt }}</span>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>
+
+<!-- Footer actions -->
+<ion-footer class="action-footer">
+  <div class="action-row" *ngIf="!editing">
+    <ion-button fill="outline" color="danger" class="del-btn" (click)="confirmDelete()">
+      <ion-icon name="trash-outline" slot="start"></ion-icon>
+      Delete
+    </ion-button>
+    <ion-button expand="block" class="edit-btn" (click)="startEdit()" [style.--background]="variantColor">
+      <ion-icon name="create-outline" slot="start"></ion-icon>
+      Edit
+    </ion-button>
+  </div>
+  <div class="action-row" *ngIf="editing">
+    <ion-button fill="outline" class="cancel-btn" (click)="cancelEdit()">Cancel</ion-button>
+    <ion-button expand="block" class="save-btn" [disabled]="saving" (click)="saveEdit()">
+      <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+      <span *ngIf="!saving"><ion-icon name="checkmark-outline" slot="start"></ion-icon> Save</span>
+    </ion-button>
+  </div>
+</ion-footer>

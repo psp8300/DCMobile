@@ -1,0 +1,181 @@
+<!-- ─── Type Picker ─── -->
+<ng-container *ngIf="!selectedType">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>New Item</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="dismiss()"><ion-icon name="close"></ion-icon></ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="picker-content">
+    <div class="picker-intro">
+      <p>What type of item do you want to add?</p>
+    </div>
+    <div class="type-grid">
+      <div class="type-card" *ngFor="let t of typeCards" (click)="selectType(t)">
+        <div class="type-icon" [style.background]="t.color + '18'">
+          <ion-icon [name]="t.icon" [style.color]="t.color"></ion-icon>
+        </div>
+        <span class="type-name">{{ t.name }}</span>
+        <span class="type-desc">{{ t.description }}</span>
+      </div>
+    </div>
+  </ion-content>
+</ng-container>
+
+<!-- ─── Form ─── -->
+<ng-container *ngIf="selectedType">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-button (click)="back()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      </ion-buttons>
+      <ion-title>New {{ selectedType.name }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="dismiss()"><ion-icon name="close"></ion-icon></ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="form-content">
+    <div class="type-banner" [style.background]="selectedType.color + '22'">
+      <div class="type-icon-sm" [style.background]="selectedType.color">
+        <ion-icon [name]="selectedType.icon"></ion-icon>
+      </div>
+      <span [style.color]="selectedType.color">{{ selectedType.name }}</span>
+    </div>
+
+    <ion-list class="form-list" lines="none">
+
+      <!-- ── ACTIVITY ── -->
+      <ng-container *ngIf="selectedType.id === 1">
+        <ion-item-divider class="divider"><ion-label>Activity Type</ion-label></ion-item-divider>
+        <div class="variant-chips">
+          <div class="chip" *ngFor="let v of activityVariants"
+               [class.active]="activityVariant === v" (click)="activityVariant = v">{{ v }}</div>
+        </div>
+        <ion-item-divider class="divider"><ion-label>Details</ion-label></ion-item-divider>
+        <ion-item class="f-item">
+          <ion-label position="stacked">Description *</ion-label>
+          <ion-input placeholder="e.g. Called John about project..." [(ngModel)]="description"></ion-input>
+        </ion-item>
+        <ion-item class="f-item">
+          <ion-label position="stacked">Date</ion-label>
+          <ion-datetime-button datetime="actDate"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true"><ion-datetime id="actDate" presentation="date" [(ngModel)]="date"></ion-datetime></ion-modal>
+        </ion-item>
+        <ion-item class="f-item">
+          <ion-label position="stacked">Duration (minutes)</ion-label>
+          <ion-input type="number" [(ngModel)]="duration" placeholder="30"></ion-input>
+        </ion-item>
+        <ion-item class="f-item">
+          <ion-label position="stacked">Notes</ion-label>
+          <ion-textarea rows="3" [(ngModel)]="notes" placeholder="Optional notes..."></ion-textarea>
+        </ion-item>
+      </ng-container>
+
+      <!-- ── CONTACT ── -->
+      <ng-container *ngIf="selectedType.id === 3">
+        <ion-item class="f-item"><ion-label position="stacked">Full Name *</ion-label><ion-input [(ngModel)]="contactName" placeholder="John Smith"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Phone Number</ion-label><ion-input type="tel" [(ngModel)]="contactPhone" placeholder="+44 7700 900000"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Email Address</ion-label><ion-input type="email" [(ngModel)]="contactEmail" placeholder="john@example.com"></ion-input></ion-item>
+        <ion-item-divider class="divider"><ion-label>Contact Type</ion-label></ion-item-divider>
+        <div class="variant-chips">
+          <div class="chip" *ngFor="let t of ['Personal','Work','Emergency','Family']"
+               [class.active]="contactType === t" (click)="contactType = t">{{ t }}</div>
+        </div>
+        <ion-item class="f-item"><ion-label position="stacked">Notes</ion-label><ion-textarea rows="2" [(ngModel)]="notes" placeholder="Optional..."></ion-textarea></ion-item>
+      </ng-container>
+
+      <!-- ── DOCUMENT ── -->
+      <ng-container *ngIf="selectedType.id === 4">
+        <ion-item class="f-item"><ion-label position="stacked">Document Name *</ion-label><ion-input [(ngModel)]="docName" placeholder="e.g. UK Passport"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Reference / Number</ion-label><ion-input [(ngModel)]="docRef" placeholder="e.g. 123456789"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Expiry Date</ion-label><ion-input [(ngModel)]="docExpiry" placeholder="e.g. 2030-01-01"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Notes</ion-label><ion-textarea rows="2" [(ngModel)]="notes" placeholder="Optional..."></ion-textarea></ion-item>
+      </ng-container>
+
+      <!-- ── CREDENTIALS ── -->
+      <ng-container *ngIf="selectedType.id === 5">
+        <ion-item class="f-item"><ion-label position="stacked">App / Site Name *</ion-label><ion-input [(ngModel)]="credName" placeholder="e.g. Netflix"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Username</ion-label><ion-input [(ngModel)]="credUsername" placeholder="your_username"></ion-input></ion-item>
+        <ion-item class="f-item">
+          <ion-label position="stacked">Password</ion-label>
+          <ion-input [type]="showCredPw ? 'text' : 'password'" [(ngModel)]="credPassword" placeholder="••••••••"></ion-input>
+          <ion-button fill="clear" slot="end" (click)="showCredPw = !showCredPw"><ion-icon [name]="showCredPw ? 'eye-off-outline' : 'eye-outline'"></ion-icon></ion-button>
+        </ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Email (for login)</ion-label><ion-input type="email" [(ngModel)]="credEmail" placeholder="email@example.com"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Website URL</ion-label><ion-input type="url" [(ngModel)]="credWebsite" placeholder="https://..."></ion-input></ion-item>
+      </ng-container>
+
+      <!-- ── NOTE ── -->
+      <ng-container *ngIf="selectedType.id === 6">
+        <ion-item class="f-item"><ion-label position="stacked">Title *</ion-label><ion-input [(ngModel)]="noteTitle" placeholder="Note title"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Content</ion-label><ion-textarea rows="6" [(ngModel)]="noteContent" placeholder="Write your note here..."></ion-textarea></ion-item>
+      </ng-container>
+
+      <!-- ── HYPERLINK ── -->
+      <ng-container *ngIf="selectedType.id === 7">
+        <ion-item class="f-item"><ion-label position="stacked">URL *</ion-label><ion-input type="url" [(ngModel)]="linkUrl" placeholder="https://..."></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Description</ion-label><ion-input [(ngModel)]="linkDesc" placeholder="What is this link for?"></ion-input></ion-item>
+      </ng-container>
+
+      <!-- ── ENTITY ── -->
+      <ng-container *ngIf="selectedType.id === 8">
+        <ion-item class="f-item"><ion-label position="stacked">Entity Name *</ion-label><ion-input [(ngModel)]="entityName" placeholder="e.g. City Telecom"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Website</ion-label><ion-input type="url" [(ngModel)]="entityWebsite" placeholder="https://..."></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Availability / Hours</ion-label><ion-input [(ngModel)]="entityHours" placeholder="e.g. Mon-Fri 9am-5pm"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Notes</ion-label><ion-textarea rows="2" [(ngModel)]="notes" placeholder="Optional..."></ion-textarea></ion-item>
+      </ng-container>
+
+      <!-- ── LOCATION ── -->
+      <ng-container *ngIf="selectedType.id === 9">
+        <ion-item class="f-item"><ion-label position="stacked">Location Name *</ion-label><ion-input [(ngModel)]="locName" placeholder="e.g. Home, Office"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Google Maps Link</ion-label><ion-input type="url" [(ngModel)]="locMapsLink" placeholder="https://maps.google.com/..."></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Directions / Notes</ion-label><ion-textarea rows="3" [(ngModel)]="locDirections" placeholder="Turn left at..."></ion-textarea></ion-item>
+      </ng-container>
+
+      <!-- ── KNOWLEDGE ── -->
+      <ng-container *ngIf="selectedType.id === 10">
+        <ion-item class="f-item"><ion-label position="stacked">Title *</ion-label><ion-input [(ngModel)]="knowledgeTitle" placeholder="e.g. Angular tip"></ion-input></ion-item>
+        <ion-item-divider class="divider"><ion-label>Type</ion-label></ion-item-divider>
+        <div class="variant-chips">
+          <div class="chip" *ngFor="let t of knowledgeTypes"
+               [class.active]="knowledgeType === t" (click)="knowledgeType = t">{{ t }}</div>
+        </div>
+        <ion-item class="f-item"><ion-label position="stacked">Content</ion-label><ion-textarea rows="5" [(ngModel)]="knowledgeContent" placeholder="Write your idea, memory or prompt..."></ion-textarea></ion-item>
+      </ng-container>
+
+      <!-- ── TASK ── -->
+      <ng-container *ngIf="selectedType.id === 2">
+        <ion-item class="f-item"><ion-label position="stacked">Task Title *</ion-label><ion-input [(ngModel)]="taskTitle" placeholder="e.g. Fix kitchen light"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Description</ion-label><ion-textarea rows="3" [(ngModel)]="taskDesc" placeholder="Details..."></ion-textarea></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Due Date</ion-label><ion-input [(ngModel)]="taskDue" placeholder="e.g. 2026-06-01"></ion-input></ion-item>
+      </ng-container>
+
+      <!-- ── MONEY ── -->
+      <ng-container *ngIf="selectedType.id === 12">
+        <ion-item class="f-item"><ion-label position="stacked">Description *</ion-label><ion-input [(ngModel)]="moneyDesc" placeholder="e.g. Monthly rent"></ion-input></ion-item>
+        <ion-item class="f-item"><ion-label position="stacked">Amount</ion-label><ion-input type="number" [(ngModel)]="moneyAmount" placeholder="0.00"></ion-input></ion-item>
+        <ion-item-divider class="divider"><ion-label>Category</ion-label></ion-item-divider>
+        <div class="variant-chips">
+          <div class="chip" *ngFor="let c of moneyCategories"
+               [class.active]="moneyCategory === c" (click)="moneyCategory = c">{{ c }}</div>
+        </div>
+        <ion-item class="f-item"><ion-label position="stacked">Notes</ion-label><ion-textarea rows="2" [(ngModel)]="notes" placeholder="Optional..."></ion-textarea></ion-item>
+      </ng-container>
+
+    </ion-list>
+  </ion-content>
+
+  <!-- Save bar -->
+  <ion-footer class="save-footer">
+    <ion-button expand="block" [disabled]="saving" (click)="save()">
+      <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+      <ion-icon *ngIf="!saving" name="checkmark-circle-outline" slot="start"></ion-icon>
+      <span *ngIf="!saving">Save {{ selectedType.name }}</span>
+    </ion-button>
+  </ion-footer>
+</ng-container>

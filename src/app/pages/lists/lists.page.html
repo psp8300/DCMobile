@@ -1,39 +1,35 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Lists</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="onAdd()">
-        <ion-icon slot="icon-only" name="add"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-title>My Lists</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-
-  <ion-card *ngFor="let list of lists" class="list-card">
-    <ion-card-content>
-      <div class="list-header">
-        <div class="list-dot" [style.background]="list.color"></div>
-        <div class="list-info">
+<ion-content class="lists-content">
+  <div class="lists-grid">
+    <div class="list-card" *ngFor="let list of lists" [style.--lc]="list.color">
+      <div class="lc-accent"></div>
+      <div class="lc-body">
+        <div class="lc-dot" [style.background]="list.color"></div>
+        <div class="lc-info">
           <h3>{{ list.listName }}</h3>
           <p>{{ list.description }}</p>
         </div>
-        <ion-badge color="primary">{{ list.itemCount }}</ion-badge>
+        <div class="lc-count" [style.background]="list.color + '18'" [style.color]="list.color">
+          {{ list.itemCount }}
+        </div>
       </div>
-      <div class="list-meta">
+      <div class="lc-footer">
         <ion-icon name="calendar-outline"></ion-icon>
         <span>Created {{ list.createdAt }}</span>
       </div>
-    </ion-card-content>
-  </ion-card>
+    </div>
+  </div>
 
-  <ion-toast
-    [isOpen]="showToast"
-    message="This is a demo — add list is not available."
-    duration="2500"
-    color="warning"
-    position="bottom">
-  </ion-toast>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" (click)="onAdd()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
+  <ion-toast [isOpen]="showToast" message="Add list — coming soon in live version." duration="2000" color="primary" position="bottom" icon="information-circle-outline"></ion-toast>
 </ion-content>

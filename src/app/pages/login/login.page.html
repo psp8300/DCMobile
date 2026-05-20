@@ -1,0 +1,65 @@
+<ion-content class="login-content">
+  <div class="login-wrap">
+
+    <!-- Logo / branding -->
+    <div class="brand">
+      <div class="brand-icon">
+        <ion-icon name="layers"></ion-icon>
+      </div>
+      <h1>DClutter</h1>
+      <p class="tagline">Your personal information hub</p>
+    </div>
+
+    <!-- Card -->
+    <div class="login-card">
+      <h2>Welcome back</h2>
+      <p class="sub">Sign in to continue</p>
+
+      <div class="field-group">
+        <ion-item class="field-item" lines="none">
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-input
+            type="email"
+            placeholder="Email address"
+            [(ngModel)]="email"
+            autocomplete="email">
+          </ion-input>
+        </ion-item>
+
+        <ion-item class="field-item" lines="none">
+          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+          <ion-input
+            [type]="showPw ? 'text' : 'password'"
+            placeholder="Password"
+            [(ngModel)]="password">
+          </ion-input>
+          <ion-button fill="clear" slot="end" (click)="showPw = !showPw" class="eye-btn">
+            <ion-icon [name]="showPw ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div>
+
+      <div class="error-msg" *ngIf="error">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        {{ error }}
+      </div>
+
+      <ion-button expand="block" class="login-btn" (click)="onLogin()" [disabled]="loading">
+        <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+        <span *ngIf="!loading">Sign In</span>
+      </ion-button>
+
+      <div class="demo-hint" (click)="fillDemo()">
+        <ion-icon name="flash-outline"></ion-icon>
+        <span>Use demo credentials</span>
+      </div>
+    </div>
+
+    <!-- Demo badge -->
+    <div class="demo-badge">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      Demo mode — no data is saved
+    </div>
+
+  </div>
+</ion-content>

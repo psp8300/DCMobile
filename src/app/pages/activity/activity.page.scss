@@ -1,60 +1,30 @@
-.activity-card {
-  border-radius: 12px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
+.activity-content { --background: var(--dc-bg); }
 
-.activity-row {
-  display: flex;
-  gap: 12px;
-}
+.timeline { padding: 16px 14px 100px; }
 
-.activity-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: var(--ion-color-primary-tint);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+.tl-item { display: flex; gap: 12px; }
 
-  ion-icon {
-    font-size: 20px;
-  }
-}
+.tl-left {
+  display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
 
-.activity-body {
-  flex: 1;
-
-  .activity-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
-
-    span {
-      font-weight: 600;
-      font-size: 15px;
-    }
+  .tl-dot {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    ion-icon { font-size: 20px; color: white; }
   }
 
-  .activity-notes {
-    margin: 0 0 6px;
-    font-size: 13px;
-    color: var(--ion-color-medium);
-    line-height: 1.4;
-  }
+  .tl-line { width: 2px; flex: 1; min-height: 16px; background: var(--dc-border); margin: 4px 0; }
+}
 
-  .activity-meta {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    color: var(--ion-color-medium);
+.tl-body {
+  background: var(--dc-card); border-radius: 14px; padding: 13px 14px;
+  margin-bottom: 10px; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 
-    ion-icon {
-      font-size: 13px;
-    }
+  .tl-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .tl-name   { font-weight: 700; font-size: 15px; }
+  .tl-duration { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+  .tl-notes  { margin: 0 0 8px; font-size: 13px; color: var(--ion-color-medium); line-height: 1.45; }
+  .tl-meta   { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--ion-color-medium);
+    ion-icon { font-size: 13px; }
   }
 }

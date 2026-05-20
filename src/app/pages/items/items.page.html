@@ -1,50 +1,46 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Items</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="onAdd()">
-        <ion-icon slot="icon-only" name="add"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
   <ion-toolbar color="primary">
     <ion-searchbar
       placeholder="Search items..."
       [(ngModel)]="searchText"
       (ionInput)="onSearch($event)"
-      debounce="200">
+      debounce="200"
+      animated>
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="items-content">
 
-  <ion-list>
-    <ion-item *ngFor="let item of filteredItems" detail="false" class="item-row">
-      <div class="item-avatar" slot="start">
-        <ion-icon name="cube-outline"></ion-icon>
+  <ion-list class="item-list" lines="none">
+    <div class="item-card" *ngFor="let item of filteredItems" (click)="openItem(item)">
+      <div class="item-avatar" [style.background]="variantColor(item.variantName) + '18'">
+        <ion-icon [name]="variantIcon(item.variantName)" [style.color]="variantColor(item.variantName)"></ion-icon>
       </div>
-      <ion-label>
-        <h3>{{ item.itemName }}</h3>
-        <p>{{ item.listName }}</p>
-        <p *ngIf="item.value1" class="value">{{ item.value1 }}</p>
-      </ion-label>
-      <ion-badge [color]="variantColor(item.variantName)" slot="end">
+      <div class="item-body">
+        <div class="item-name">{{ item.itemName }}</div>
+        <div class="item-list-name">{{ item.listName }}</div>
+        <div class="item-value" *ngIf="item.value1">{{ item.value1 }}</div>
+      </div>
+      <div class="item-badge" [style.background]="variantColor(item.variantName) + '18'" [style.color]="variantColor(item.variantName)">
         {{ item.variantName }}
-      </ion-badge>
-    </ion-item>
+      </div>
+    </div>
   </ion-list>
 
-  <ion-note *ngIf="filteredItems.length === 0" class="ion-padding ion-text-center empty-note">
-    No items found
-  </ion-note>
+  <div class="empty-state" *ngIf="filteredItems.length === 0">
+    <ion-icon name="search-outline"></ion-icon>
+    <p>No items found</p>
+  </div>
 
-  <ion-toast
-    [isOpen]="showToast"
-    message="This is a demo — add item is not available."
-    duration="2500"
-    color="warning"
-    position="bottom">
-  </ion-toast>
+  <!-- FAB -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" (click)="openCreate()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>
