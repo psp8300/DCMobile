@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.dclutter.app',
-  appName: 'DCMobile',
+  appName: 'DClutter Demo',
   webDir: 'www'
 };
 
