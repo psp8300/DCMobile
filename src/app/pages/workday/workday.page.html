@@ -1,0 +1,121 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Workday</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="wd-content">
+
+  <!-- Active session banner -->
+  <div class="session-banner active" *ngIf="session?.status === 'Active'">
+    <div class="banner-top">
+      <div class="session-dot active-dot"></div>
+      <span class="banner-title">Workday Active</span>
+      <span class="banner-loc">
+        <ion-icon [name]="session?.location === 'Office' ? 'business-outline' : 'home-outline'"></ion-icon>
+        {{ session?.location }}
+      </span>
+    </div>
+    <div class="banner-stats">
+      <div class="bstat">
+        <span class="bstat-lbl">Started</span>
+        <span class="bstat-val">{{ formatTime(session?.loginTime) }}</span>
+      </div>
+      <div class="bstat">
+        <span class="bstat-lbl">Elapsed</span>
+        <span class="bstat-val timer">{{ elapsed }}</span>
+      </div>
+    </div>
+
+    <!-- Current activity -->
+    <div class="cur-act" *ngIf="currentActivity"
+         [style.border-left-color]="activityColor(currentActivity.activityType)"
+         [style.background]="activityColor(currentActivity.activityType) + '12'">
+      <ion-icon [name]="activityIcon(currentActivity.activityType)"
+                [style.color]="activityColor(currentActivity.activityType)"></ion-icon>
+      <span class="ca-label" [style.color]="activityColor(currentActivity.activityType)">
+        {{ activityLabel(currentActivity.activityType) }}
+      </span>
+      <span class="ca-since">since {{ formatTime(currentActivity.startTime) }}</span>
+    </div>
+  </div>
+
+  <!-- Completed session banner -->
+  <div class="session-banner completed" *ngIf="session?.status === 'Completed'">
+    <div class="banner-top">
+      <div class="session-dot done-dot"></div>
+      <span class="banner-title">Workday Completed</span>
+    </div>
+    <div class="banner-stats">
+      <div class="bstat">
+        <span class="bstat-lbl">In</span>
+        <span class="bstat-val">{{ formatTime(session?.loginTime) }}</span>
+      </div>
+      <div class="bstat">
+        <span class="bstat-lbl">Out</span>
+        <span class="bstat-val">{{ formatTime(session?.logoutTime) }}</span>
+      </div>
+      <div class="bstat">
+        <span class="bstat-lbl">Location</span>
+        <span class="bstat-val">{{ session?.location }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- No session -->
+  <div class="no-session" *ngIf="!session">
+    <ion-icon name="work-outline"></ion-icon>
+    <p>No workday started today</p>
+  </div>
+
+  <!-- Work history -->
+  <div class="section" *ngIf="workActivities.length > 0">
+    <div class="section-title">
+      <ion-icon name="laptop-outline"></ion-icon> Work History
+    </div>
+    <ion-list lines="none" class="act-list">
+      <ion-item *ngFor="let act of workActivities" class="act-item">
+        <div class="act-dot" slot="start" [style.background]="act.endTime ? '#10b981' : '#f59e0b'"></div>
+        <ion-label>
+          <div class="act-times">
+            <span>{{ formatTime(act.startTime) }}</span>
+            <span class="arr">→</span>
+            <span>{{ act.endTime ? formatTime(act.endTime) : 'now' }}</span>
+            <span class="act-dur">{{ formatDuration(act.durationMinutes) }}</span>
+          </div>
+          <div class="act-sub" *ngIf="act.taskName">
+            <ion-icon name="checkmark-circle-outline"></ion-icon> {{ act.taskName }}
+          </div>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Breaks -->
+  <div class="section" *ngIf="breakActivities.length > 0">
+    <div class="section-title">
+      <ion-icon name="pause-circle-outline"></ion-icon> Breaks
+    </div>
+    <ion-list lines="none" class="act-list">
+      <ion-item *ngFor="let act of breakActivities" class="act-item">
+        <div class="act-dot" slot="start" [style.background]="activityColor(act.activityType)"></div>
+        <ion-label>
+          <div class="act-times">
+            <span class="act-type-label" [style.color]="activityColor(act.activityType)">
+              {{ activityLabel(act.activityType) }}
+            </span>
+            <span class="arr">·</span>
+            <span>{{ formatTime(act.startTime) }}</span>
+            <span class="arr">→</span>
+            <span>{{ act.endTime ? formatTime(act.endTime) : 'now' }}</span>
+            <span class="act-dur">{{ formatDuration(act.durationMinutes) }}</span>
+          </div>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+</ion-content>

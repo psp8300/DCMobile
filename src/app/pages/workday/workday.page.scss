@@ -1,0 +1,108 @@
+.wd-content {
+  --background: #f3f4f6;
+}
+
+.session-banner {
+  margin: 16px;
+  border-radius: 14px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+  &.active { border-top: 3px solid #10b981; }
+  &.completed { border-top: 3px solid #6366f1; }
+}
+
+.banner-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.session-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  &.active-dot { background: #10b981; box-shadow: 0 0 0 3px #10b98130; }
+  &.done-dot { background: #6366f1; }
+}
+
+.banner-title {
+  font-size: 15px; font-weight: 700; color: #111827; flex: 1;
+}
+
+.banner-loc {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 12px; color: #6b7280;
+  ion-icon { font-size: 13px; }
+}
+
+.banner-stats {
+  display: flex; gap: 20px;
+}
+
+.bstat {
+  display: flex; flex-direction: column; gap: 2px;
+}
+
+.bstat-lbl { font-size: 10px; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.bstat-val {
+  font-size: 17px; font-weight: 700; color: #111827; font-variant-numeric: tabular-nums;
+  &.timer { color: #10b981; }
+}
+
+.cur-act {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 12px; padding: 10px 12px;
+  border-left: 3px solid #10b981; border-radius: 8px;
+  ion-icon { font-size: 18px; }
+}
+
+.ca-label { font-size: 13px; font-weight: 700; flex: 1; }
+.ca-since { font-size: 11px; color: #6b7280; font-variant-numeric: tabular-nums; }
+
+.no-session {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 24px; gap: 10px; color: #9ca3af;
+  ion-icon { font-size: 48px; color: #d1d5db; }
+  p { margin: 0; font-size: 14px; }
+}
+
+.section {
+  margin: 0 16px 16px;
+}
+
+.section-title {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 700; color: #374151;
+  padding: 8px 4px; text-transform: uppercase; letter-spacing: 0.04em;
+  ion-icon { color: #6366f1; }
+}
+
+.act-list {
+  background: #fff; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+
+  ion-item { --padding-start: 12px; --inner-padding-end: 12px; }
+}
+
+.act-item { --background: transparent; }
+
+.act-dot {
+  width: 8px; height: 8px; border-radius: 50; flex-shrink: 0;
+  margin-right: 8px; border-radius: 50%;
+}
+
+.act-times {
+  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+  font-size: 13px; color: #374151;
+}
+
+.arr { color: #d1d5db; font-size: 11px; }
+.act-dur { margin-left: auto; font-weight: 700; color: #111827; font-variant-numeric: tabular-nums; }
+.act-type-label { font-weight: 600; }
+
+.act-sub {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 11px; color: #6366f1; margin-top: 3px;
+  ion-icon { font-size: 12px; }
+}

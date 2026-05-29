@@ -28,6 +28,22 @@ const routes: Routes = [
         loadChildren: () => import('../pages/schedule/schedule.module').then(m => m.SchedulePageModule),
       },
       {
+        path: 'workday',
+        loadChildren: () => import('../pages/workday/workday.module').then(m => m.WorkdayPageModule),
+      },
+      {
+        path: 'attendance',
+        loadChildren: () => import('../pages/attendance/attendance.module').then(m => m.AttendancePageModule),
+      },
+      {
+        path: 'live-status',
+        loadChildren: () => import('../pages/live-status/live-status.module').then(m => m.LiveStatusPageModule),
+      },
+      {
+        path: 'workforce',
+        loadChildren: () => import('../pages/workforce/workforce.module').then(m => m.WorkforcePageModule),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

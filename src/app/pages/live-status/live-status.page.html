@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Who's Doing What</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="load()">
+        <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="live-content">
+
+  <div class="refresh-row">
+    <span class="last-refresh">Updated {{ lastRefreshed | date:'HH:mm:ss' }}</span>
+  </div>
+
+  <!-- Member cards -->
+  <ion-card class="member-card" *ngFor="let m of members">
+    <ion-card-content>
+
+      <!-- Identity row -->
+      <div class="identity-row">
+        <div class="m-avatar-wrap">
+          <div class="m-avatar">{{ initials(m.displayName) }}</div>
+          <span class="m-dot" [style.background]="statusColor(m.sessionStatus)"></span>
+        </div>
+        <div class="m-info">
+          <div class="m-name">{{ m.displayName }}</div>
+          <div class="m-sub">
+            <span class="role-tag" [class.manager]="m.role === 'Manager'">{{ m.role }}</span>
+            <span class="loc-tag">
+              <ion-icon [name]="m.location === 'Office' ? 'business-outline' : 'home-outline'"></ion-icon>
+              {{ m.location ?? 'Office' }}
+            </span>
+          </div>
+        </div>
+        <div class="m-time" *ngIf="m.loginTime">
+          <span class="mt-lbl">In</span>
+          <span class="mt-val">{{ formatTime(m.loginTime) }}</span>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-row" *ngIf="m.sessionStatus !== 'NotStarted'">
+        <div class="stat-cell">
+          <span class="sc-lbl">Net Time</span>
+          <span class="sc-val primary">{{ formatDuration(m.netTimeMins) }}</span>
+        </div>
+        <div class="stat-cell">
+          <span class="sc-lbl">Breaks</span>
+          <span class="sc-val warn">{{ formatDuration(m.breakDurationMins) }}</span>
+        </div>
+        <div class="stat-cell">
+          <span class="sc-lbl">Earnings</span>
+          <span class="sc-val earn">{{ formatEarnings(m.earnings) }}</span>
+        </div>
+      </div>
+
+      <!-- Current activity -->
+      <div class="cur-act-row" *ngIf="m.sessionStatus === 'Active' && m.currentActivity"
+           [style.background]="activityColor(m.currentActivity) + '12'"
+           [style.border-left-color]="activityColor(m.currentActivity)">
+        <ion-icon [name]="activityIcon(m.currentActivity)"
+                  [style.color]="activityColor(m.currentActivity)"></ion-icon>
+        <span class="car-label" [style.color]="activityColor(m.currentActivity)">
+          {{ activityLabel(m.currentActivity) }}
+        </span>
+        <span class="car-elapsed">{{ elapsed(m.activityStartTime) }}</span>
+      </div>
+
+      <!-- Not started -->
+      <div class="status-row not-started" *ngIf="m.sessionStatus === 'NotStarted'">
+        <ion-icon name="time-outline"></ion-icon> Not started yet
+      </div>
+
+      <!-- Done -->
+      <div class="status-row done" *ngIf="m.sessionStatus === 'Completed'">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        Out at {{ formatTime(m.logoutTime) }}
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

@@ -27,6 +27,13 @@ export class DashboardPage implements OnInit {
     { icon: 'cash',         label: 'Money',       color: '#0891B2' },
   ];
 
+  workdayActions = [
+    { icon: 'timer-outline',       label: 'Workday',      color: '#10b981', route: '/tabs/workday' },
+    { icon: 'checkmark-done-outline', label: 'Attendance',   color: '#6366f1', route: '/tabs/attendance' },
+    { icon: 'people-outline',      label: 'Workforce',    color: '#f59e0b', route: '/tabs/workforce' },
+    { icon: 'eye-outline',         label: "Who's Doing What", color: '#0891B2', route: '/tabs/live-status' },
+  ];
+
   get greeting(): string {
     const h = new Date().getHours();
     if (h < 12) return 'morning';

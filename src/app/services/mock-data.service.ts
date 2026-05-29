@@ -1,6 +1,135 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
+// ─── Workday Interfaces ───────────────────────────────────────────────────────
+
+export interface WorkdaySession {
+  sessionId: number;
+  status: 'Active' | 'Completed';
+  loginTime: string;
+  logoutTime?: string;
+  location: 'Office' | 'Home';
+}
+
+export interface WorkActivity {
+  activityId: number;
+  activityType: 'SystemWork' | 'LunchBreak' | 'CoffeeBreak' | 'PersonalBreak' | 'ScreenLock';
+  startTime: string;
+  endTime?: string;
+  durationMinutes?: number;
+  location: string;
+  taskName?: string;
+}
+
+export interface AttendanceRecord {
+  sessionDate: string;
+  loginTime: string;
+  logoutTime?: string;
+  totalDurationMins: number;
+  breakDurationMins: number;
+  netTimeMins: number;
+  earnings: number;
+  status: 'Active' | 'Completed' | 'Absent';
+  location: string;
+  userName: string;
+  userId: number;
+}
+
+export interface TeamMemberStatus {
+  userId: number;
+  displayName: string;
+  role: string;
+  sessionStatus: 'Active' | 'Completed' | 'NotStarted';
+  location?: string;
+  loginTime?: string;
+  logoutTime?: string;
+  netTimeMins?: number;
+  breakDurationMins?: number;
+  earnings?: number;
+  currentActivity?: string;
+  activityStartTime?: string;
+}
+
+// ─── Workday Mock Data ────────────────────────────────────────────────────────
+
+const TODAY = '2026-05-29';
+const NOW_ISO = new Date().toISOString();
+
+const MOCK_SESSION: WorkdaySession = {
+  sessionId: 1001,
+  status: 'Active',
+  loginTime: `${TODAY}T09:03:00`,
+  location: 'Office',
+};
+
+const MOCK_WORK_HISTORY: WorkActivity[] = [
+  { activityId: 1, activityType: 'SystemWork',   startTime: `${TODAY}T09:03:00`, endTime: `${TODAY}T10:45:00`, durationMinutes: 102, location: 'Office', taskName: 'DClutter Mobile – workday pages' },
+  { activityId: 2, activityType: 'CoffeeBreak',  startTime: `${TODAY}T10:45:00`, endTime: `${TODAY}T11:00:00`, durationMinutes: 15,  location: 'Office' },
+  { activityId: 3, activityType: 'SystemWork',   startTime: `${TODAY}T11:00:00`, endTime: `${TODAY}T13:00:00`, durationMinutes: 120, location: 'Office', taskName: 'DClutter Mobile – workday pages' },
+  { activityId: 4, activityType: 'LunchBreak',   startTime: `${TODAY}T13:00:00`, endTime: `${TODAY}T13:45:00`, durationMinutes: 45,  location: 'Office' },
+  { activityId: 5, activityType: 'SystemWork',   startTime: `${TODAY}T13:45:00`, endTime: undefined,           durationMinutes: undefined, location: 'Office', taskName: 'Routing & mock data' },
+];
+
+const MOCK_ATTENDANCE: AttendanceRecord[] = [
+  { sessionDate: TODAY,         loginTime: `${TODAY}T09:03:00`,         logoutTime: undefined,              totalDurationMins: 0,   breakDurationMins: 60,  netTimeMins: 0,   earnings: 0,     status: 'Active',    location: 'Office', userName: 'Demo User', userId: 1 },
+  { sessionDate: '2026-05-28',  loginTime: '2026-05-28T08:58:00',       logoutTime: '2026-05-28T17:10:00',  totalDurationMins: 492, breakDurationMins: 55,  netTimeMins: 437, earnings: 875,   status: 'Completed', location: 'Office', userName: 'Demo User', userId: 1 },
+  { sessionDate: '2026-05-27',  loginTime: '2026-05-27T09:12:00',       logoutTime: '2026-05-27T17:00:00',  totalDurationMins: 468, breakDurationMins: 65,  netTimeMins: 403, earnings: 806,   status: 'Completed', location: 'Home',   userName: 'Demo User', userId: 1 },
+  { sessionDate: '2026-05-26',  loginTime: '2026-05-26T09:00:00',       logoutTime: '2026-05-26T17:30:00',  totalDurationMins: 510, breakDurationMins: 50,  netTimeMins: 460, earnings: 920,   status: 'Completed', location: 'Office', userName: 'Demo User', userId: 1 },
+  { sessionDate: '2026-05-23',  loginTime: '2026-05-23T09:05:00',       logoutTime: '2026-05-23T17:15:00',  totalDurationMins: 490, breakDurationMins: 70,  netTimeMins: 420, earnings: 840,   status: 'Completed', location: 'Office', userName: 'Demo User', userId: 1 },
+  { sessionDate: '2026-05-22',  loginTime: '2026-05-22T09:00:00',       logoutTime: '2026-05-22T17:00:00',  totalDurationMins: 480, breakDurationMins: 60,  netTimeMins: 420, earnings: 840,   status: 'Completed', location: 'Home',   userName: 'Demo User', userId: 1 },
+  { sessionDate: '2026-05-21',  loginTime: '2026-05-21T08:55:00',       logoutTime: '2026-05-21T17:05:00',  totalDurationMins: 490, breakDurationMins: 45,  netTimeMins: 445, earnings: 890,   status: 'Completed', location: 'Office', userName: 'Demo User', userId: 1 },
+  { sessionDate: '2026-05-20',  loginTime: '2026-05-20T09:10:00',       logoutTime: '2026-05-20T17:10:00',  totalDurationMins: 480, breakDurationMins: 60,  netTimeMins: 420, earnings: 840,   status: 'Completed', location: 'Office', userName: 'Demo User', userId: 1 },
+  { sessionDate: '2026-05-19',  loginTime: '2026-05-19T09:00:00',       logoutTime: '2026-05-19T17:00:00',  totalDurationMins: 480, breakDurationMins: 55,  netTimeMins: 425, earnings: 850,   status: 'Completed', location: 'Home',   userName: 'Demo User', userId: 1 },
+];
+
+const MOCK_TEAM: TeamMemberStatus[] = [
+  {
+    userId: 1, displayName: 'Demo User', role: 'Employee',
+    sessionStatus: 'Active', location: 'Office',
+    loginTime: `${TODAY}T09:03:00`, netTimeMins: 330, breakDurationMins: 60,
+    earnings: 660, currentActivity: 'SystemWork', activityStartTime: `${TODAY}T13:45:00`,
+  },
+  {
+    userId: 2, displayName: 'Priya Sharma', role: 'Manager',
+    sessionStatus: 'Active', location: 'Office',
+    loginTime: `${TODAY}T08:50:00`, netTimeMins: 355, breakDurationMins: 45,
+    earnings: 1065, currentActivity: 'SystemWork', activityStartTime: `${TODAY}T14:00:00`,
+  },
+  {
+    userId: 3, displayName: 'Arjun Mehta', role: 'Employee',
+    sessionStatus: 'Active', location: 'Home',
+    loginTime: `${TODAY}T09:30:00`, netTimeMins: 285, breakDurationMins: 30,
+    earnings: 570, currentActivity: 'LunchBreak', activityStartTime: `${TODAY}T13:30:00`,
+  },
+  {
+    userId: 4, displayName: 'Kavya Reddy', role: 'Employee',
+    sessionStatus: 'Completed', location: 'Office',
+    loginTime: `${TODAY}T08:45:00`, logoutTime: `${TODAY}T14:30:00`,
+    netTimeMins: 300, breakDurationMins: 45, earnings: 600,
+  },
+  {
+    userId: 5, displayName: 'Ravi Nair', role: 'Employee',
+    sessionStatus: 'NotStarted', location: 'Office',
+  },
+];
+
+const ALL_TEAM_ATTENDANCE: AttendanceRecord[] = [
+  // Demo User - recent days
+  { sessionDate: TODAY,         loginTime: `${TODAY}T09:03:00`,         logoutTime: undefined,              totalDurationMins: 0,   breakDurationMins: 60,  netTimeMins: 0,   earnings: 0,    status: 'Active',    location: 'Office', userName: 'Demo User',   userId: 1 },
+  { sessionDate: '2026-05-28',  loginTime: '2026-05-28T08:58:00',       logoutTime: '2026-05-28T17:10:00',  totalDurationMins: 492, breakDurationMins: 55,  netTimeMins: 437, earnings: 875,  status: 'Completed', location: 'Office', userName: 'Demo User',   userId: 1 },
+  { sessionDate: '2026-05-27',  loginTime: '2026-05-27T09:12:00',       logoutTime: '2026-05-27T17:00:00',  totalDurationMins: 468, breakDurationMins: 65,  netTimeMins: 403, earnings: 806,  status: 'Completed', location: 'Home',   userName: 'Demo User',   userId: 1 },
+  // Priya Sharma
+  { sessionDate: TODAY,         loginTime: `${TODAY}T08:50:00`,         logoutTime: undefined,              totalDurationMins: 0,   breakDurationMins: 45,  netTimeMins: 355, earnings: 1065, status: 'Active',    location: 'Office', userName: 'Priya Sharma', userId: 2 },
+  { sessionDate: '2026-05-28',  loginTime: '2026-05-28T09:00:00',       logoutTime: '2026-05-28T18:00:00',  totalDurationMins: 540, breakDurationMins: 60,  netTimeMins: 480, earnings: 1440, status: 'Completed', location: 'Office', userName: 'Priya Sharma', userId: 2 },
+  { sessionDate: '2026-05-27',  loginTime: '2026-05-27T09:05:00',       logoutTime: '2026-05-27T17:30:00',  totalDurationMins: 505, breakDurationMins: 55,  netTimeMins: 450, earnings: 1350, status: 'Completed', location: 'Office', userName: 'Priya Sharma', userId: 2 },
+  // Arjun Mehta
+  { sessionDate: TODAY,         loginTime: `${TODAY}T09:30:00`,         logoutTime: undefined,              totalDurationMins: 0,   breakDurationMins: 30,  netTimeMins: 285, earnings: 570,  status: 'Active',    location: 'Home',   userName: 'Arjun Mehta',  userId: 3 },
+  { sessionDate: '2026-05-28',  loginTime: '2026-05-28T09:15:00',       logoutTime: '2026-05-28T17:00:00',  totalDurationMins: 465, breakDurationMins: 50,  netTimeMins: 415, earnings: 830,  status: 'Completed', location: 'Home',   userName: 'Arjun Mehta',  userId: 3 },
+  // Kavya Reddy
+  { sessionDate: TODAY,         loginTime: `${TODAY}T08:45:00`,         logoutTime: `${TODAY}T14:30:00`,    totalDurationMins: 345, breakDurationMins: 45,  netTimeMins: 300, earnings: 600,  status: 'Completed', location: 'Office', userName: 'Kavya Reddy',  userId: 4 },
+  { sessionDate: '2026-05-28',  loginTime: '2026-05-28T08:55:00',       logoutTime: '2026-05-28T17:05:00',  totalDurationMins: 490, breakDurationMins: 55,  netTimeMins: 435, earnings: 870,  status: 'Completed', location: 'Office', userName: 'Kavya Reddy',  userId: 4 },
+];
+
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
 export interface DashboardStats {
@@ -153,5 +282,56 @@ export class MockDataService {
 
   getSchedule(): Observable<ScheduleEvent[]> {
     return of(MOCK_SCHEDULE);
+  }
+
+  // ─── Workday Methods ─────────────────────────────────────────────────────────
+
+  getWorkdaySession(): Observable<WorkdaySession | null> {
+    return of(MOCK_SESSION);
+  }
+
+  getWorkHistory(): Observable<WorkActivity[]> {
+    return of(MOCK_WORK_HISTORY);
+  }
+
+  getAttendance(period: 'day' | 'week' | 'month', viewDate: Date): Observable<AttendanceRecord[]> {
+    const filtered = MOCK_ATTENDANCE.filter(r => {
+      const d = new Date(r.sessionDate);
+      if (period === 'day') return r.sessionDate === viewDate.toISOString().split('T')[0];
+      if (period === 'week') {
+        const ws = this.weekStart(viewDate);
+        const we = new Date(ws.getTime() + 6 * 86400000);
+        return d >= ws && d <= we;
+      }
+      return d.getFullYear() === viewDate.getFullYear() && d.getMonth() === viewDate.getMonth();
+    });
+    return of(filtered);
+  }
+
+  getTeamLiveStatus(): Observable<TeamMemberStatus[]> {
+    return of(MOCK_TEAM);
+  }
+
+  getTeamAttendance(period: 'day' | 'week' | 'month', viewDate: Date, userId?: number): Observable<AttendanceRecord[]> {
+    let records = userId ? ALL_TEAM_ATTENDANCE.filter(r => r.userId === userId) : ALL_TEAM_ATTENDANCE;
+    records = records.filter(r => {
+      const d = new Date(r.sessionDate);
+      if (period === 'day') return r.sessionDate === viewDate.toISOString().split('T')[0];
+      if (period === 'week') {
+        const ws = this.weekStart(viewDate);
+        const we = new Date(ws.getTime() + 6 * 86400000);
+        return d >= ws && d <= we;
+      }
+      return d.getFullYear() === viewDate.getFullYear() && d.getMonth() === viewDate.getMonth();
+    });
+    return of(records);
+  }
+
+  private weekStart(d: Date): Date {
+    const r = new Date(d);
+    const diff = r.getDay() === 0 ? -6 : 1 - r.getDay();
+    r.setDate(r.getDate() + diff);
+    r.setHours(0, 0, 0, 0);
+    return r;
   }
 }

@@ -1,0 +1,101 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Workforce</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="wf-content">
+
+  <!-- Member filter -->
+  <div class="filter-row">
+    <button class="ftab" [class.active]="!selectedMemberId" (click)="selectMember(undefined)">All</button>
+    <button class="ftab" *ngFor="let m of members"
+            [class.active]="selectedMemberId === m.userId"
+            (click)="selectMember(m.userId)">
+      {{ m.displayName.split(' ')[0] }}
+    </button>
+  </div>
+
+  <!-- Period tabs -->
+  <div class="period-bar">
+    <button class="ptab" [class.active]="period === 'day'" (click)="setPeriod('day')">Day</button>
+    <button class="ptab" [class.active]="period === 'week'" (click)="setPeriod('week')">Week</button>
+    <button class="ptab" [class.active]="period === 'month'" (click)="setPeriod('month')">Month</button>
+  </div>
+
+  <!-- Date navigation -->
+  <div class="date-nav">
+    <button class="nav-btn" (click)="prev()">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </button>
+    <span class="period-label">{{ periodLabel }}</span>
+    <button class="nav-btn" (click)="next()" [disabled]="isCurrent">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </button>
+    <button class="nav-btn today-btn" (click)="goNow()" [disabled]="isCurrent">
+      <ion-icon name="today-outline"></ion-icon>
+    </button>
+  </div>
+
+  <!-- Summary strip -->
+  <div class="summary-strip" *ngIf="records.length > 0">
+    <div class="sum-card">
+      <span class="sum-val">{{ totalPresent }}</span>
+      <span class="sum-lbl">Present</span>
+    </div>
+    <div class="sum-card">
+      <span class="sum-val primary">{{ formatDuration(totalNet) }}</span>
+      <span class="sum-lbl">Net Time</span>
+    </div>
+    <div class="sum-card">
+      <span class="sum-val earn">{{ formatEarnings(totalEarnings) }}</span>
+      <span class="sum-lbl">Total Earnings</span>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="records.length === 0">
+    <ion-icon name="people-outline"></ion-icon>
+    <p>No records for {{ selectedName }} this period.</p>
+  </div>
+
+  <!-- Records list -->
+  <ion-list lines="none" class="records-list" *ngIf="records.length > 0">
+    <ion-card class="rec-card" *ngFor="let r of records">
+      <ion-card-content>
+        <div class="rec-header">
+          <div class="rec-member">
+            <div class="mini-av">{{ initials(r.userName) }}</div>
+            <span class="rec-name">{{ r.userName }}</span>
+          </div>
+          <span class="rec-date">{{ formatDate(r.sessionDate) }}</span>
+          <span class="status-chip" [class.active]="r.status === 'Active'" [class.done]="r.status === 'Completed'">
+            {{ r.status }}
+          </span>
+        </div>
+        <div class="rec-grid">
+          <div class="rec-cell">
+            <span class="rc-lbl">In</span>
+            <span class="rc-val">{{ formatTime(r.loginTime) }}</span>
+          </div>
+          <div class="rec-cell">
+            <span class="rc-lbl">Out</span>
+            <span class="rc-val">{{ formatTime(r.logoutTime) }}</span>
+          </div>
+          <div class="rec-cell">
+            <span class="rc-lbl">Net Time</span>
+            <span class="rc-val primary">{{ formatDuration(r.netTimeMins) }}</span>
+          </div>
+          <div class="rec-cell">
+            <span class="rc-lbl">Earnings</span>
+            <span class="rc-val earn">{{ formatEarnings(r.earnings) }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+</ion-content>

@@ -45,6 +45,19 @@
     </div>
   </div>
 
+  <!-- Workday section -->
+  <div class="section-header">
+    <span>Workday</span>
+  </div>
+  <div class="workday-grid">
+    <div class="wd-card" *ngFor="let w of workdayActions" [routerLink]="w.route" [style.--wdc-color]="w.color">
+      <div class="wdc-icon">
+        <ion-icon [name]="w.icon" [style.color]="w.color"></ion-icon>
+      </div>
+      <span class="wdc-label">{{ w.label }}</span>
+    </div>
+  </div>
+
   <!-- Recent activity -->
   <div class="section-header">
     <span>Recent Activity</span>
