@@ -1,0 +1,66 @@
+name: Build & Release APK
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular
+        run: npx ng build --configuration production
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Build APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - name: Copy APK to releases/
+        run: |
+          mkdir -p releases
+          cp android/app/build/outputs/apk/debug/app-debug.apk releases/DClutter-Demo-debug.apk
+
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: DClutter Demo v1.0.0
+          body: |
+            ## DClutter Demo APK
+
+            Android demo app — built automatically on every push to `main`.
+
+            | Role | Email | Password |
+            |------|-------|----------|
+            | Manager | manager@dc.com | dcm |
+            | Employee 1 | employee1@dc.com | dce1 |
+            | Employee 2 | employee2@dc.com | dce2 |
+
+            **Install:** Download the APK, allow *Install from unknown sources* on your Android device.
+          files: releases/DClutter-Demo-debug.apk
+          token: ${{ secrets.GITHUB_TOKEN }}
